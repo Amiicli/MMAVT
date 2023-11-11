@@ -24,14 +24,14 @@ bl_info = {
 
 import bpy
 
-from .milan_property import MMAVT_mbody_data,MMAVT_hfem_data,MMAVT_mbody, MMAVT_hfem, MMAVT_instance
+from .MMAVT_property import MMAVT_mbody_data,MMAVT_hfem_data,MMAVT_mbody, MMAVT_hfem, MMAVT_instance
 from .mmavt_prop_op import Milan_OT_AddMBodyToMMAVT,Milan_OT_DeleteMBodyFromMMAVT,Milan_OT_AddObjToMbody,Milan_OT_RemoveObjFromMbody
 from .mmavt_arm_op import Milan_OT_ReadyArmature,Milan_OT_RemoveArmatureRef,Milan_OT_export_mmavt_to_string
 from .mmavt_hfem_op import Milan_OT_Add_HFEM_Data,Milan_OT_Instantiate_HFEM_Properties,Milan_OT_remove_hfem_data
 from .mmavt_panel import MMAVT_PT_Panel
 from .mmavt_export_panel import MMAVT_PT_export_panel
 from .mmavt_locale import langs
-# from . milan_property import my_bool
+# from . MMAVT_property import my_bool
 
 properties = (MMAVT_mbody_data,MMAVT_hfem_data,MMAVT_hfem,MMAVT_mbody,MMAVT_instance)
 operators = (Milan_OT_AddObjToMbody,Milan_OT_RemoveObjFromMbody,Milan_OT_ReadyArmature,

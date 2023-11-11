@@ -5,7 +5,7 @@ from mathutils import Vector
 from bpy.types import Operator
 from bpy.types import Armature
 from .milan_utilities import MUtil
-from .milan_property import MMAVT_instance, MMAVT_mbody_data, MMAVT_hfem_data,MMAVT_hfem,MMAVT_mbody
+from .MMAVT_property import MMAVT_instance, MMAVT_mbody_data, MMAVT_hfem_data,MMAVT_hfem,MMAVT_mbody
 
 
 class Milan_OT_AddMBodyToMMAVT(Operator):

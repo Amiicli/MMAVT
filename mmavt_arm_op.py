@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 
 from bpy.types import Operator
-from .milan_property import *
+from .MMAVT_property import *
 from .milan_utilities import MUtil
 from .mmavt_locale import langs
 

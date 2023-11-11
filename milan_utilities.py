@@ -1,5 +1,5 @@
 import bpy
-from .milan_property import MMAVT_instance, MMAVT_mbody_data, MMAVT_hfem_data, MMAVT_hfem, MMAVT_mbody
+from .MMAVT_property import MMAVT_instance, MMAVT_mbody_data, MMAVT_hfem_data, MMAVT_hfem, MMAVT_mbody
 
 class MUtil():
 

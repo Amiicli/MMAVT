@@ -1,6 +1,6 @@
 import bpy
 
-from .milan_property import MMAVT_instance,MMAVT_mbody_data,MMAVT_hfem_data,MMAVT_hfem,MMAVT_mbody
+from .MMAVT_property import MMAVT_instance,MMAVT_mbody_data,MMAVT_hfem_data,MMAVT_hfem,MMAVT_mbody
 from .milan_utilities import MUtil
 from bpy.types import Context, Panel
 from bpy.types import PropertyGroup
@@ -19,6 +19,16 @@ class MMAVT_PT_export_panel(Panel):
     bl_region_type = "UI"
     bl_label = "MMAVT Exporter"
     bl_category = "Milan Util"
+
+    @classmethod
+    def poll(cls, context):
+        objs = context.view_layer.objects.selected
+        ctx = context.mode
+        
+        if bpy.context.mode == 'OBJECT' or bpy.context.mode == 'POSE':
+            return True
+        
+        return False
 
 
     def draw(self, context):

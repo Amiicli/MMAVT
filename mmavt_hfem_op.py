@@ -5,7 +5,7 @@ from mathutils import Vector
 from bpy.types import Operator
 from .mmavt_panel import MMAVT_mbody
 from .milan_utilities import MUtil
-from .milan_property import *
+from .MMAVT_property import *
 
 
 class Milan_OT_Instantiate_HFEM_Properties(Operator):
