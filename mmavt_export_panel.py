@@ -1,7 +1,7 @@
 import bpy
 
 from .milan_property import MMAVT_instance,MMAVT_mbody_data,MMAVT_hfem_data,MMAVT_hfem,MMAVT_mbody
-from .mmavt_functions import MMil
+from .milan_utilities import MUtil
 from bpy.types import Context, Panel
 from bpy.types import PropertyGroup
 from bpy.props import (StringProperty,
@@ -27,7 +27,9 @@ class MMAVT_PT_export_panel(Panel):
         row = layout.row()
         row.alignment ='LEFT'
         mmavt_list = bpy.context.scene.mmavt_list
-        row.label(text="JSON Export")
+
+        LOCALE_jsonexport = bpy.app.translations.pgettext('JSON Export')
+        row.label(text=LOCALE_jsonexport)
         for mmavt in mmavt_list:
             mmavt:MMAVT_instance
             row = layout.box().row()

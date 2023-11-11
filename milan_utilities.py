@@ -1,7 +1,7 @@
 import bpy
 from .milan_property import MMAVT_instance, MMAVT_mbody_data, MMAVT_hfem_data, MMAVT_hfem, MMAVT_mbody
 
-class MMil():
+class MUtil():
 
     def get_mmavt_from_arm_name(nameToFind:str) -> MMAVT_instance:
         for property in bpy.context.scene.mmavt_list:

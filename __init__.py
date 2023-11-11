@@ -30,6 +30,7 @@ from .mmavt_arm_op import Milan_OT_ReadyArmature,Milan_OT_RemoveArmatureRef,Mila
 from .mmavt_hfem_op import Milan_OT_Add_HFEM_Data,Milan_OT_Instantiate_HFEM_Properties,Milan_OT_remove_hfem_data
 from .mmavt_panel import MMAVT_PT_Panel
 from .mmavt_export_panel import MMAVT_PT_export_panel
+from .mmavt_locale import langs
 # from . milan_property import my_bool
 
 properties = (MMAVT_mbody_data,MMAVT_hfem_data,MMAVT_hfem,MMAVT_mbody,MMAVT_instance)
@@ -40,13 +41,13 @@ panels = (MMAVT_PT_Panel,MMAVT_PT_export_panel)
 
 
 def register():
+    bpy.app.translations.register(__name__, langs)
     for p in properties:
         bpy.utils.register_class(p)
     for o in operators:
         bpy.utils.register_class(o)
     for pa in panels:
         bpy.utils.register_class(pa)
-        
     bpy.types.Scene.mmavt_list = bpy.props.CollectionProperty(type=MMAVT_instance)
 
 def unregister():
@@ -56,5 +57,6 @@ def unregister():
         bpy.utils.unregister_class(o)
     for pa in panels:
         bpy.utils.unregister_class(pa)
+    bpy.app.translations.unregister(__name__)
 
 

@@ -1,7 +1,7 @@
 import bpy
 
 from .milan_property import MMAVT_instance,MMAVT_mbody_data,MMAVT_hfem_data,MMAVT_hfem,MMAVT_mbody
-from .mmavt_functions import MMil
+from .milan_utilities import MUtil
 from bpy.types import Context, Panel
 from bpy.types import PropertyGroup
 from bpy.props import (StringProperty,
@@ -12,6 +12,7 @@ from bpy.props import (StringProperty,
                        PointerProperty,
                        CollectionProperty
                        )
+from .mmavt_locale import *
 
 
 class MMAVT_PT_Panel(Panel):
@@ -24,24 +25,23 @@ class MMAVT_PT_Panel(Panel):
     def draw(self, context):
         scene = context.scene
         layout = self.layout
-        # arm = context.armature
         
         ob = context.object
         row = layout.row()
         col = row.column()
-        # col.prop(ob, "parent")
         isArmature = False
+        user_lang = bpy.context.preferences.view.language
 
         for item in context.selected_objects:
             item:bpy.types.Object = item
             if HasItem(item):
-                # print(str(HasItem(item)))
-                col.label(text= item.name + " is already an MMAVT armature",)
+                LOCALE_already_armature = bpy.app.translations.pgettext('{} is already an MMAVT armature').format(item.name)
+                col.label(text= LOCALE_already_armature)
                 isArmature = True
                 break
             if item.type == 'ARMATURE':
                 isArmature = True
-                op = col.operator("object.rdyarm",text="READY ARMATURE")
+                op = col.operator("object.rdyarm")
                 op.arm_to_ready = item.name
 
         if isArmature == False:
@@ -81,7 +81,7 @@ class MMAVT_PT_Panel(Panel):
                             if mmavt.eye_usage_type != 'LR_EYES_ONLY' and mmavt.eye_usage_type != 'BOTH_SYSTEMS':
                                 counter +=1
                                 continue
-                        HFEMProp(hfem,counter,box,hfem.name,MMil.get_HFEM_icon(counter),canUse)
+                        HFEMProp(hfem,counter,box,hfem.name,MUtil.get_HFEM_icon(counter),canUse)
                         counter +=1
                         ...
                 
@@ -170,7 +170,7 @@ def HFEMProp(kind:MMAVT_hfem,index:int,layout:bpy.types.UILayout,title:str,icon:
     mmvmCtr = bpy.data.objects[kind.parent_arm.name].pose.bones.get("MMAVT_Controller")
     if mmvmCtr is  None:
         return #return here so that we don't end up referencing an empty bone when we delete during MMAVT deletion
-    hfemEnum = MMil.get_HFEM_enum(index)
+    hfemEnum = MUtil.get_HFEM_enum(index)
     indent(newLineF)
     indent(newLineF)
     

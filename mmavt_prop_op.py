@@ -4,7 +4,7 @@ from mathutils import Vector
 
 from bpy.types import Operator
 from bpy.types import Armature
-from .mmavt_functions import MMil
+from .milan_utilities import MUtil
 from .milan_property import MMAVT_instance, MMAVT_mbody_data, MMAVT_hfem_data,MMAVT_hfem,MMAVT_mbody
 
 
@@ -30,14 +30,14 @@ class Milan_OT_AddMBodyToMMAVT(Operator):
     def execute(cls,context):
         # test:str = cls.strprop_to_add + "/" + cls.arm_ref
         # print(test)
-        mmavt:MMAVT_instance = MMil.get_mmavt_from_arm_name(cls.arm_ref)
+        mmavt:MMAVT_instance = MUtil.get_mmavt_from_arm_name(cls.arm_ref)
         mbody_list:MMAVT_mbody = mmavt.mbody_list
         uniqueName = generate_unique_name(cls.default_name,mbody_list)
         new_mbody = mbody_list.add()
         new_mbody.name = uniqueName
         new_mbody.old = ""
         new_mbody.arm = mmavt.arm
-        MMil.adjust_mmavt_property(new_mbody)
+        MUtil.adjust_mmavt_property(new_mbody)
         return {"FINISHED"}
     
 class Milan_OT_DeleteMBodyFromMMAVT(Operator):
@@ -57,14 +57,14 @@ class Milan_OT_DeleteMBodyFromMMAVT(Operator):
         return True
     
     def execute(cls,context):
-        mmavt = MMil.get_mmavt_from_arm_name(cls.arm_ref)
+        mmavt = MUtil.get_mmavt_from_arm_name(cls.arm_ref)
         mmavt.arm.name
         propToRemove = cls.strprop_to_remove
         counter = 0
         for prop in mmavt.mbody_list:
             if propToRemove == prop.name:
                 for obj in prop.data_list:
-                    MMil.remove_driver(obj.name)
+                    MUtil.remove_driver(obj.name)
                 mmavt.mbody_list.remove(counter)
                 del bpy.data.objects[mmavt.arm.name].pose.bones["MMAVT_Controller"][propToRemove]
             counter +=1
@@ -89,9 +89,9 @@ class Milan_OT_AddObjToMbody(Operator):
     def execute(cls,context):
         test:str = cls.propToAddTo + "/" + cls.arm_ref
         print(test)
-        mmavt = MMil.get_mmavt_from_arm_name(cls.arm_ref)
+        mmavt = MUtil.get_mmavt_from_arm_name(cls.arm_ref)
         props:MMAVT_mbody = mmavt.mbody_list
-        prop = MMil.get_mbody_from_list(cls.propToAddTo,props)
+        prop = MUtil.get_mbody_from_list(cls.propToAddTo,props)
         prop.foldout = True
         data:MMAVT_mbody_data = prop.data_list.add()
         data.arm:Armature = mmavt.arm
@@ -121,11 +121,11 @@ class Milan_OT_RemoveObjFromMbody(Operator):
         return True
     
     def execute(cls,context):
-        mmavt = MMil.get_mmavt_from_arm_name(cls.arm_ref)   
+        mmavt = MUtil.get_mmavt_from_arm_name(cls.arm_ref)   
         props = mmavt.mbody_list
-        prop = MMil.get_mbody_from_list(cls.propToRemoveFrom,props)
+        prop = MUtil.get_mbody_from_list(cls.propToRemoveFrom,props)
         prop.data_list.remove(cls.objToRemove)
-        MMil.remove_driver(cls.name)
+        MUtil.remove_driver(cls.name)
         return {"FINISHED"}
 
     

@@ -18,7 +18,7 @@ def generate_mbody_expr(numberToInsert):
     return tempVal
 
 def generate_hfem_expr(hfem_data):
-    from .mmavt_functions import MMil
+    from .milan_utilities import MUtil
     hfem_data:MMAVT_hfem_data = hfem_data
     tempval = ''
     if hfem_data.prop_name == "HEAD":
@@ -41,13 +41,13 @@ def make_driver_path(armatureName:str,propertyName:str):
     return tempVal + tempVal2
     
 def set_mbody_driver(data):
-    from .mmavt_functions import MMil
+    from .milan_utilities import MUtil
     data:MMAVT_mbody_data = data
     obj = data.obj_ref
     data.name = data.obj_ref.name
     nameIs = "propety name to look for is: " + data.prop_name
     print(nameIs)
-    prop = MMil.GetPropertyFromArmature(data.arm,data.prop_name)
+    prop = MUtil.GetPropertyFromArmature(data.arm,data.prop_name)
     bpy.data.objects[data.name].driver_remove("hide_viewport")
     if data.old_name != "":
         bpy.data.objects[data.old_name].driver_remove("hide_viewport")
@@ -66,13 +66,13 @@ def set_mbody_driver(data):
     dri.driver.expression = dri.driver.expression
 
 def set_hfem_driver(data):
-    from .mmavt_functions import MMil
+    from .milan_utilities import MUtil
     data:MMAVT_hfem_data = data
     obj:bpy.types.Object = data.obj_ref
     data.name = data.obj_ref.name
     nameIs = "propety name to look for is: " + data.prop_name
     print(nameIs)
-    prop = MMil.GetPropertyFromArmature(data.arm,data.prop_name)
+    prop = MUtil.GetPropertyFromArmature(data.arm,data.prop_name)
     bpy.data.objects[data.name].driver_remove("hide_viewport")
     if data.old_name != "":
         bpy.data.objects[data.old_name].driver_remove("hide_viewport")
@@ -96,7 +96,7 @@ def set_hfem_driver(data):
     dri.driver.expression = dri.driver.expression
 
 def make_hfem_driver_var(data, driver:bpy.types.Driver,var_name:str,path_name:str):
-    from .mmavt_functions import MMil
+    from .milan_utilities import MUtil
     data:MMAVT_hfem_data = data
     var:bpy.types.DriverVariable = driver.variables.new()
     var.name = var_name
@@ -122,16 +122,16 @@ def update_hfem_driver_path(self,context):
         set_hfem_driver(data)
 
 def fix_mbody_property_name(self,context):
-    from .mmavt_functions import MMil
+    from .milan_utilities import MUtil
     
-    MMil.adjust_mmavt_property(self)
+    MUtil.adjust_mmavt_property(self)
     update_mbody_driver_path(self,context)
 
 def fix_hfem_property_name(self,context):
-    from .mmavt_functions import MMil
+    from .milan_utilities import MUtil
     nameIs = "name is: " + self.old_name
     print(nameIs)
-    MMil.adjust_mmavt_property(self)
+    MUtil.adjust_mmavt_property(self)
     update_hfem_driver_path(self,context)
 
 def MMAVT_FixDupNum(self,context):
@@ -142,19 +142,19 @@ def MMAVT_FixDupNum(self,context):
     update_mbody_driver_path(self,context)
 
 def update_mbody_obj_data(self,context):
-    from .mmavt_functions import MMil
+    from .milan_utilities import MUtil
     set_mbody_driver(self)
 
 def update_hfem_obj_data(self,context):
-    from .mmavt_functions import MMil
+    from .milan_utilities import MUtil
     set_hfem_driver(self)
 
 def AddCustomProperty(self,context):
-    from .mmavt_functions import MMil
+    from .milan_utilities import MUtil
     self:MMAVT_mbody_data = self
     scream = "SELF: " + str(self)
     print(scream)
-    MMil.adjust_mmavt_property(self)
+    MUtil.adjust_mmavt_property(self)
     for data in self.data_list:
         MMAVT_FixDupNum(self.data,context)
         print(self.name)
@@ -245,4 +245,5 @@ class MMAVT_instance(PropertyGroup):
     eye_usage_type : EnumProperty(name="",items = [('EYE_ONLY','Single Eye','','PIVOT_ACTIVE',1),
         ('LR_EYES_ONLY','L&R Eyes','','PIVOT_INDIVIDUAL',0),                                                   
         ('BOTH_SYSTEMS','Both Systems','','OUTLINER_OB_POINTCLOUD',2)])
-    folder_export_path : StringProperty(subtype="FILE_PATH" )
+    folder_export_path : StringProperty(subtype="DIR_PATH" )
+

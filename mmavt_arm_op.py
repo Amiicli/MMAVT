@@ -7,7 +7,8 @@ from datetime import datetime
 
 from bpy.types import Operator
 from .milan_property import *
-from .mmavt_functions import MMil
+from .milan_utilities import MUtil
+from .mmavt_locale import langs
 
 class Milan_OT_ReadyArmature(Operator):
     bl_idname = "object.rdyarm"
@@ -20,7 +21,7 @@ class Milan_OT_ReadyArmature(Operator):
     def poll(cls, context):
         objs = context.view_layer.objects.selected
         ctx = context.mode
-        
+
         if bpy.context.mode == 'OBJECT':
             return True
         
@@ -75,7 +76,7 @@ class Milan_OT_ReadyArmature(Operator):
         
         for i in range(6):
             hfemData = new_mmavt.hfem_list.add()    
-            hfemData.kind = MMil.get_HFEM_enum(i)
+            hfemData.kind = MUtil.get_HFEM_enum(i)
             hfemData.parent_arm = new_mmavt.arm
         new_mmavt.eye_usage_type = 'EYE_ONLY'
         return {"FINISHED"}
@@ -112,8 +113,7 @@ class Milan_OT_RemoveArmatureRef(Operator):
                 arm_index = counter
                 for mbody in mmavt.mbody_list:
                     for data in mbody.data_list:
-                        MMil.remove_driver(data.name)
-                    
+                        MUtil.remove_driver(data.name)
             counter += 1
         counter:int = 0
         for mmavt in bpy.context.scene.mmavt_list:
@@ -121,7 +121,7 @@ class Milan_OT_RemoveArmatureRef(Operator):
                 arm_index = counter 
                 for hfem in mmavt.hfem_list: 
                     for data in hfem.list:
-                        MMil.remove_driver(data.name)      
+                        MUtil.remove_driver(data.name)      
             counter += 1
 
         for obj in bpy.data.objects:
@@ -142,7 +142,7 @@ class Milan_OT_export_mmavt_to_string(Operator):
 
     bl_idname = "object.export_mmavt_to_string"
     bl_label = "Export MMAVT data to string"
-    bl_description = "Export data from MMAVT into a string that can be parsed by game engines supporting MMAVT"
+    bl_description = "Export data from MMAVT into a .json file that can be parsed by game engines supporting MMAVT"
     
     arm_ref : bpy.props.StringProperty(name = "Armature reference", default="")
 
@@ -150,15 +150,9 @@ class Milan_OT_export_mmavt_to_string(Operator):
     def poll(cls, context):
         objs = context.view_layer.objects.selected
         ctx = context.mode
-        # arm:bpy.types.Armature = bpy.data.objects.get(cls.arm_ref)
-        # if arm is None:
-        #     return False
-        # mmavtCtr = arm.pose.bones.get("MMAVT_Controller")
-        # if mmavtCtr is None:
-        #     return False
+
         return True
     
-    ##TODO: Make it so that people can't name something face in mobdy if they trying to generate an hfem instance
     def execute(cls,context):
         scene = context.scene
         selected_obj = context.selected_objects
@@ -166,7 +160,7 @@ class Milan_OT_export_mmavt_to_string(Operator):
         
         arm:bpy.types.Armature = bpy.data.objects[cls.arm_ref]
         mmavtCtr:bpy.types.Bone = bpy.data.objects[cls.arm_ref].pose.bones["MMAVT_Controller"]
-        mmavtInst:MMAVT_instance = MMil.get_mmavt_from_arm_name(cls.arm_ref)
+        mmavtInst:MMAVT_instance = MUtil.get_mmavt_from_arm_name(cls.arm_ref)
         hfem_list = mmavtInst.hfem_list
         mbody_list:bpy.types.CollectionProperty = mmavtInst.mbody_list
 

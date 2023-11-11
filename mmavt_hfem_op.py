@@ -4,7 +4,7 @@ from mathutils import Vector
 
 from bpy.types import Operator
 from .mmavt_panel import MMAVT_mbody
-from .mmavt_functions import MMil
+from .milan_utilities import MUtil
 from .milan_property import *
 
 
@@ -21,9 +21,7 @@ class Milan_OT_Instantiate_HFEM_Properties(Operator):
     def poll(cls, context):
         objs = context.view_layer.objects.selected
         ctx = context.mode
-        # mmavt:MMAVT_instance = MMil.get_mmavt_from_arm_name(cls.arm_ref)
-        # for hfem in mmavt.hfem_list:
-        #     ...
+
         return True
     
     ##TODO: Make it so that people can't name something face in mobdy if they trying to generate an hfem instance
@@ -31,12 +29,12 @@ class Milan_OT_Instantiate_HFEM_Properties(Operator):
         scene = context.scene
         selected_obj = context.selected_objects
         mmavtCtr = bpy.data.objects[cls.arm_ref].pose.bones["MMAVT_Controller"]
-        mmavtInst:MMAVT_instance = MMil.get_mmavt_from_arm_name(cls.arm_ref)
+        mmavtInst:MMAVT_instance = MUtil.get_mmavt_from_arm_name(cls.arm_ref)
         hfem_list:MMAVT_mbody = mmavtInst.hfem_list
 
         counter = 0
         for hfem in hfem_list:
-            enumPhrase = MMil.get_HFEM_enum(counter)
+            enumPhrase = MUtil.get_HFEM_enum(counter)
             hfem:MMAVT_hfem = hfem
             hfem.name = str(enumPhrase)
             mmavtCtr[enumPhrase] = -1
@@ -53,7 +51,7 @@ class Milan_OT_Add_HFEM_Data(Operator):
 
     bl_idname = "object.add_hfem_data"
     bl_label = "Add hfem data"
-    bl_description = "Remove armature from list of MMAVT armatures"
+    bl_description = "Remove hfem data from hfem group"
     
     arm_ref : bpy.props.StringProperty(name = "Armature reference", default="")
     hfem_index : bpy.props.IntProperty()
@@ -63,16 +61,20 @@ class Milan_OT_Add_HFEM_Data(Operator):
     def poll(cls, context):
         objs = context.view_layer.objects.selected
         ctx = context.mode
-        return True
+
+        if bpy.context.mode == 'OBJECT' or bpy.context.mode == 'POSE':
+            return True
+        
+        return False
     
     def execute(cls,context):
         scene = context.scene
         selected_obj = context.selected_objects
         
-        hfem_enum = MMil.get_HFEM_enum(cls.hfem_index)
-        mmavt = MMil.get_mmavt_from_arm_name(cls.arm_ref)
+        hfem_enum = MUtil.get_HFEM_enum(cls.hfem_index)
+        mmavt = MUtil.get_mmavt_from_arm_name(cls.arm_ref)
         hfem_list:MMAVT_mbody = mmavt.hfem_list
-        hfem = MMil.get_hfem_from_list(cls.propToAddTo,hfem_list)
+        hfem = MUtil.get_hfem_from_list(cls.propToAddTo,hfem_list)
         data:MMAVT_mbody_data = hfem.list.add()
         data.arm:bpy.types.Armature = mmavt.arm
         data.prop_name = cls.propToAddTo
@@ -102,11 +104,11 @@ class Milan_OT_remove_hfem_data(Operator):
         # test:str = cls.propToAddTo + "/" +
         #  cls.arm_ref
         # print(test)
-        mmavt = MMil.get_mmavt_from_arm_name(cls.arm_ref)   
+        mmavt = MUtil.get_mmavt_from_arm_name(cls.arm_ref)   
         props = mmavt.hfem_list
-        prop = MMil.get_hfem_from_list(cls.propToRemoveFrom,props)
+        prop = MUtil.get_hfem_from_list(cls.propToRemoveFrom,props)
         prop.list.remove(cls.objToRemove)
-        MMil.remove_driver(cls.name)
+        MUtil.remove_driver(cls.name)
         return {"FINISHED"}
 
     
