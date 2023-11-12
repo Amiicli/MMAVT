@@ -19,6 +19,7 @@ class Milan_OT_Instantiate_HFEM_Properties(Operator):
 
     @classmethod
     def poll(cls, context):
+        
         objs = context.view_layer.objects.selected
         ctx = context.mode
 

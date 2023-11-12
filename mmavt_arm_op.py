@@ -292,18 +292,17 @@ class Milan_OT_export_mmavt_to_string(Operator):
         json_mmavt.mbody = json_mbody
         jason = (json.dumps(json_mmavt,default=vars,indent=2))
 
-        filepath=mmavtInst.folder_export_path + arm.name + ".json"
+        filepath= mmavtInst.folder_export_path + arm.name + ".json"
         with open(filepath,'w') as f:
             f.write(jason)
         currentdirectory = os.getcwd()
-        print(currentdirectory)
+        print("filepath is; " + filepath)
         ##TODO: Add way to disable this
+        print("Path is: " + currentdirectory +"/" +"result.json")
         with open(currentdirectory +"/" +"result.json",'w') as f:
             f.write(jason)
 
-
         bpy.context.window_manager.clipboard = jason
-                    
         print("framerate is: " + str(bpy.context.scene.render.fps))
         return {"FINISHED"}
 
